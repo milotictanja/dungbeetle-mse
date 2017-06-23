@@ -1,7 +1,7 @@
 rm(list=ls())
 library(vegan)
 
-setwd("C:/Users/tanja.milotic@inbo.be/Documents/PhD/8 MSE Europe/R scripts")
+setwd("~/PhD/8 MSE Europe/Github/dungbeetle-mse/data")
 
 ####-NMDS analysis####
 db_fg<-read.delim("dbFG_envSites.txt",header=T)
@@ -596,4 +596,65 @@ fgr<-rbind(Dr.sum,BTr.sum, STr.sum,SRr.sum,totalr.sum)
 fgr$result<-paste(round(fgr$mean,digits=1),"±",round(fgr$se,digits=1))
 write.csv(fgr,file="fgrichness_exportANOVA.csv")
 
+#anova results
+response<-c("dung","trap","biogeo","biogeo:Code","Residuals")
+colnames<-c("response","Df","Fvalue","p","FG")
+anovaD1<-anova(aovD)
+FG<-rep("D",5)
+anovaD<-data.frame(response,anovaD1$Df,anovaD1$`F value`,anovaD1$`Pr(>F)`,FG)
+colnames(anovaD)<-colnames
 
+anovaBT1<-anova(aovBT)
+FG<-rep("BT",5)
+anovaBT<-data.frame(response,anovaBT1$Df,anovaBT1$`F value`,anovaBT1$`Pr(>F)`,FG)
+colnames(anovaBT)<-colnames
+
+anovaST1<-anova(aovST)
+FG<-rep("ST",5)
+anovaST<-data.frame(response,anovaST1$Df,anovaST1$`F value`,anovaST1$`Pr(>F)`,FG)
+colnames(anovaST)<-colnames
+
+anovaSR1<-anova(aovSR)
+FG<-rep("SR",5)
+anovaSR<-data.frame(response,anovaSR1$Df,anovaSR1$`F value`,anovaSR1$`Pr(>F)`,FG)
+colnames(anovaSR)<-colnames
+
+anovatotal1<-anova(aovtotal)
+FG<-rep("total",5)
+anovatotal<-data.frame(response,anovatotal1$Df,anovatotal1$`F value`,anovatotal1$`Pr(>F)`,FG)
+colnames(anovatotal)<-colnames
+
+anovaDr1<-anova(aovDr)
+FG<-rep("Dr",5)
+anovaDr<-data.frame(response,anovaDr1$Df,anovaDr1$`F value`,anovaDr1$`Pr(>F)`,FG)
+colnames(anovaDr)<-colnames
+
+anovaBTr1<-anova(aovBTr)
+FG<-rep("BTr",5)
+anovaBTr<-data.frame(response,anovaBTr1$Df,anovaBTr1$`F value`,anovaBTr1$`Pr(>F)`,FG)
+colnames(anovaBTr)<-colnames
+
+anovaSTr1<-anova(aovSTr)
+FG<-rep("STr",5)
+anovaSTr<-data.frame(response,anovaSTr1$Df,anovaSTr1$`F value`,anovaSTr1$`Pr(>F)`,FG)
+colnames(anovaSTr)<-colnames
+
+anovaSRr1<-anova(aovSRr)
+FG<-rep("SRr",5)
+anovaSRr<-data.frame(response,anovaSRr1$Df,anovaSRr1$`F value`,anovaSRr1$`Pr(>F)`,FG)
+colnames(anovaSRr)<-colnames
+
+anovatotalr1<-anova(aovtotalr)
+FG<-rep("totalr",5)
+anovatotalr<-data.frame(response,anovatotalr1$Df,anovatotalr1$`F value`,anovatotalr1$`Pr(>F)`,FG)
+colnames(anovatotalr)<-colnames
+
+anova.results<-rbind(anovaD,anovaBT,anovaST,anovaSR, anovatotal,anovaDr,anovaBTr,anovaSTr,anovaSRr,anovatotalr)
+
+anova.results
+
+anova.results<-subset(anova.results,response!="Residuals")
+anova.results$Fvalue<-round(anova.results$Fvalue,digits=3)
+anova.results$p<-round(anova.results$p,digits=3)
+
+write.csv(anova.results,file="anova_results.csv")
