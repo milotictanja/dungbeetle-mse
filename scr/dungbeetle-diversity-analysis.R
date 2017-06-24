@@ -712,4 +712,11 @@ tiff(filename="lon_plot.tiff",width=600,height=600,unit="px")
 lon.plot
 dev.off()
 
+library(cowplot)
+tiff(filename="LatLon.tiff",width=1200,height=600,unit="px")
+ggdraw() +
+  draw_plot(lat.plot, 0, 0, 0.5, 1) +
+  draw_plot(lon.plot, 0.5, 0, 0.5, 1) +
+  draw_plot_label(c("a","b"),c(0,0.5),c(1,1),size=18)
+dev.off()
 
