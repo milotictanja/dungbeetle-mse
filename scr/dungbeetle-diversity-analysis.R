@@ -182,7 +182,7 @@ NMDSplot
 
 NMDSplot<-NMDSplot+
   scale_color_manual(name=expression(bold("Biogeographic region")),
-                     values=c("lightgoldenrod","thistle4","coral3","forestgreen","green3","goldenrod2","olivedrab3","aquamarine2","chocolate4","deeppink"))+
+                     values=c("#eedd92","#3a88c0","#cfa516","#bbdd92","#7cc19f","#c2b377","#80764f","#63bac6","#8b455b","#57876f"))+
   scale_linetype_manual(name=expression(bold("Biogeographic region")),
                         values=c("solid","longdash","solid","longdash","solid","longdash","dotdash","solid","solid","longdash"))+
   theme(legend.key.width = unit(4, 'lines'),legend.key.size = unit(2.5, 'lines'),legend.title=element_text(size=28,face="bold"),legend.text=element_text(size=24))
@@ -658,3 +658,58 @@ anova.results$Fvalue<-round(anova.results$Fvalue,digits=3)
 anova.results$p<-round(anova.results$p,digits=3)
 
 write.csv(anova.results,file="anova_results.csv")
+
+
+####generalist vs specialists####
+dbHS<-read.delim("HabitatDiffSites.txt",header=T)
+head(dbHS)
+dbHS$specialist100<-dbHS$specialist*100
+
+lat <- lm(latitude ~ specialist100, data = dbHS)
+summary(lat)
+
+lon <- lm(longitude ~ specialist100, data = dbHS)
+summary(lon)
+
+
+#graphs
+library(ggplot2)
+lat.plot<-ggplot()+
+  geom_smooth(data=dbHS,aes(x=latitude,y=specialist100),method=lm, se=F,color="grey40")+
+  geom_point(data=dbHS,aes(x=latitude,y=specialist100),colour="#8b455b",size=3)+
+  geom_text(data=dbHS,aes(x=latitude+1,y=specialist100,label=sitecode),size=6,vjust=1,hjust=0.5)+
+  theme_classic()+
+  theme(axis.line.x = element_line(color="black", size = .5),axis.line.y = element_line(color="black", size = .5))+
+  theme(axis.text.x=element_text(size=14),axis.text.y=element_text(size=14))+
+  theme(axis.title.x=element_text(size=16),axis.title.y=element_text(size=16))+
+  ylab(expression(bold("Specialist proportion (%)")))+
+  xlab(expression(bold("Latitude (° N)")))+
+  coord_cartesian(ylim=c(-5,105))+
+  scale_y_continuous(expand = c(0, 0))+
+  annotate(geom = "text",x=38,y=0,label="R²= 0.323, p= 0.017",size=6)
+lat.plot
+
+lon.plot<-ggplot()+
+  geom_smooth(data=dbHS,aes(x=longitude,y=specialist100),method=lm, se=F,color="grey40")+
+  geom_point(data=dbHS,aes(x=longitude,y=specialist100),colour="#8b455b",size=3)+
+  geom_text(data=dbHS,aes(x=longitude+2,y=specialist100,label=sitecode),size=6,vjust=1,hjust=0.5)+
+  theme_classic()+
+  theme(axis.line.x = element_line(color="black", size = .5),axis.line.y = element_line(color="black", size = .5))+
+  theme(axis.text.x=element_text(size=14),axis.text.y=element_text(size=14))+
+  theme(axis.title.x=element_text(size=16),axis.title.y=element_text(size=16))+
+  ylab(expression(bold("Specialist proportion (%)")))+
+  xlab(expression(bold("Longitude (°E)")))+
+  coord_cartesian(ylim=c(-5,105))+
+  scale_y_continuous(expand = c(0, 0))+
+  annotate(geom = "text",x=40,y=0,label="R²= 0.265, p= 0.034",size=6)
+lon.plot
+
+tiff(filename="lat_plot.tiff",width=600,height=600,unit="px")
+lat.plot
+dev.off()
+
+tiff(filename="lon_plot.tiff",width=600,height=600,unit="px")
+lon.plot
+dev.off()
+
+
