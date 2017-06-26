@@ -41,22 +41,11 @@ env_sum<-summarise(env,count=n(),lat=mean(lat),lon=mean(lon),alt=mean(alt),MMXT=
 
 env_num<-env_sum[,5:14]
 env_num<-env_num[complete.cases(env_num),]
-cor(env_num)
-cor.test(env_num$MMXT,env_num$MMNT)
-cor.test(env_num$MMXT,env_num$TotalP)
-cor.test(env_num$EMXP,env_num$TotalP)
-cor.test(env_num$MNTM,env_num$TotalP)
-cor.test(env_num$MNTM,env_num$MMXT)
-cor.test(env_num$MNTM,env_num$MMNT)
 
-env2<-group_by(env,SiteCode)
-env2_sum<-summarise(env2,count=n(),lat=mean(lat),lon=mean(lon),alt=mean(alt))
-env2_num<-env2_sum[,3:5]
-cor(env2_num)
+library(Hmisc)
 
-cor.test(env2_num$lat,env2_num$lon)
-cor.test(env2_num$lat,env2_num$alt)
-cor.test(env2_num$lon,env2_num$alt)
+cor<-rcorr(as.matrix(env_num), type="pearson")
+cor
 
 #mean temp highly correlated with temp vars, extreme min and max temp correlated with min and max temp
 #x, y, z correlated, but yet needed in analysis
@@ -403,8 +392,8 @@ fg<-rbind(D.sum,BT.sum, ST.sum,SR.sum,total.sum)
 fg$result<-paste(round(fg$mean,digits=1),"±",round(fg$se,digits=1))
 write.csv(fg,file="fg_exportANOVA.csv")
 
-####
-#species richness of each functional group
+
+####species richness of each functional group####
 db_fgR<-read.delim("dbFGrichness_envSites.txt",header=T)
 summary(db_fgR)
 db_fgR$total<-db_fgR$BT+db_fgR$D+db_fgR$SR+db_fgR$ST
@@ -720,4 +709,5 @@ ggdraw() +
   draw_plot(lon.plot, 0.5, 0, 0.5, 1) +
   draw_plot_label(c("a","b"),c(0,0.5),c(1,1),size=18)
 dev.off()
+
 
