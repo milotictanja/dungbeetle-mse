@@ -110,10 +110,11 @@ NMDS.data$NMDS2<-NMDS1$points[ ,2]
 ##species data
 spps <- data.frame(scores(NMDS1, display = "species")) #dataframe of species scores for plotting
 spps$species <- row.names(spps) # making a column with species names
-spps$species<-c("lT","D","sR","sT") #more intuitive abbreviations
+spps$species<-c("T","D","r","t") #more intuitive abbreviations
 spps<-spps[!is.na(spps$NMDS1) & !is.na(spps$NMDS2),] #removes NAs
 spps$labelX<-spps$NMDS1
 spps$labelY<-spps$NMDS2+0.05
+spps$species<-as.factor(spps$species)
 
 # data for the envfit arrows
 env.scores <- as.data.frame(scores(envfit1, display = "vectors")) #extracts relevant scores from envfit
